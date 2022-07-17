@@ -1,4 +1,6 @@
 const data = require('../data/database.json')
+const fs = require('fs')
+const {v4: uuidv4} = require('uuid')
 
 const findAll = () => {
     const promise = new Promise((resolve, reject) => {
@@ -10,27 +12,49 @@ const findAll = () => {
 
 const findByID = (id) => {
 
+    // for (let i = 0; i < data.products.length; i++) {
+    //     if (data.products[i].id === id) {
+    //         const promise = new Promise((resolve, reject) => {
+    //             resolve(data.products[i])
+    //         })
 
-    let dataTemp = null
+    //         return promise
+    //     }
+    // }
 
-    for (let i = 0; i < data.products.length; i++) {
-        if (data.products.id === id) {
-            dataTemp = data.products
-        }
-    }
+    // return null
 
-    if (dataTemp) {
-        const promise = new Promise((resolve, reject) => {
-            resolve(dataTemp)
-        })
+    return new Promise((resolve, reject)=>{
+        const product = data.products.find((par)=>{par.id === id})
+        resolve(product)
+    })
+}
 
-        return promise
-    }
+const addToDatabase = (item) => {
 
-    return dataTemp
+    return new Promise((resolve, reject)=>{
+        // const newProduct = JSON.parse(jsonObj)
+        const newItem = {...item, id: uuidv4()}
+        data.products.push(newItem)
+        // fs.appendFile(data, newProduct, (err) => {
+        //     throw err
+        // })
+        writeDataToFile('./data/database.json', data.products)
+        resolve(newItem)
+    })
+    
+    
+}
+
+const writeDataToFile = (filename, content) => {
+
+    fs.writeFileSync(filename, JSON.stringify(content), 'utf8', (err)=>{
+        if (err) console.group(err)
+    })
 }
 
 module.exports = {
     findAll,
-    findByID
+    findByID,
+    addToDatabase
 }
