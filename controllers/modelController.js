@@ -1,52 +1,54 @@
-const { findAll, findByID, addToDatabase } = require('../services/modelServices')
+const { findAll, findByID, addToDatabase, getPostData } = require('../services/modelServices')
 
 const getModels = async (req, res) => {
-    
-        try {
-            const data = await findAll()
-            generalResponse(req, res, data)
-        } catch (error) {
-            console.log(error)
-        }
-    
+
+    try {
+        const data = await findAll()
+        generalResponse(req, res, data)
+    } catch (error) {
+        console.log(error)
+    }
+
 
 
 }
 
 const getModelByID = async (req, res, id) => {
-    
-        try {
-            const data = await findByID(id)
-            if (data) {
-                generalResponse(req, res, data)
-            } else {
-                error404(req, res)
-            }
 
-        } catch (error) {
-            console.log(error)
+    try {
+        const data = await findByID(id)
+        if (data) {
+            generalResponse(req, res, data)
+        } else {
+            error404(req, res)
         }
-    
+
+    } catch (error) {
+        console.log(error)
+    }
+
 
 
 }
 
 const addModel = async (req, res) => {
-    
-        try {
 
-            const newProduct = {
-                name: "Airpods",
-                description: "Bluetooth",
-                price: 89.99
-            }
+    try {
+        const body = await getPostData(req)
+        const { name, description, price } = JSON.parse(body)
 
-            const data = await addToDatabase(newProduct)
-            generalResponse(req, res, data)
-        } catch (error) {
-            console.log(error)
+        const newProduct = {
+            name,
+            description,
+            price
         }
-    
+
+        const data = await addToDatabase(newProduct)
+        generalResponse(req, res, data)
+    } catch (error) {
+        console.log(error)
+    }
+
 
 }
 

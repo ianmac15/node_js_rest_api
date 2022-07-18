@@ -8,22 +8,20 @@ const server = http.createServer((req, res) => {
     if (req.url === '/api/products') {
         if (req.method === 'GET') {
             getModels(req, res)
-            return
-        }
-        if (req.method === 'POST') {
+        } else if (req.method === 'POST') {
             addModel(req, res)
-            return
+        }
+    } else if (req.url.match(/\/api\/products\/([0-9]+)/)) {
+        if (req.method === 'GET') {
+            const id = req.url.split('/')[3]
+            getModelByID(req, res, id)
         }
 
-    }
-    if (req.url.match(/\/api\/products\/([0-9]+)/)) {
-        const id = req.url.split('/')[3]
-        getModelByID(req, res, id)
-        return
+    } else {
+        error404(req, res)
     }
 
-
-    error404(req, res)
+    
 
 })
 
