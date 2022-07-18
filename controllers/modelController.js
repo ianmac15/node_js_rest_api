@@ -1,4 +1,4 @@
-const { findAll, findByID, addToDatabase, getPostData } = require('../services/modelServices')
+const { findAll, findByID, addToDatabase, getPostData, editModel } = require('../services/modelServices')
 
 const getModels = async (req, res) => {
 
@@ -16,10 +16,11 @@ const getModels = async (req, res) => {
 const getModelByID = async (req, res, id) => {
 
     try {
-        const data = await findByID(id)
-        if (data) {
-            generalResponse(req, res, data)
-        } else {
+        const product = await findByID(id)
+        if (product) {
+            generalResponse(req, res, product)
+        }
+        else {
             error404(req, res)
         }
 
@@ -48,12 +49,40 @@ const addModel = async (req, res) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+const updateModel = async (req, res, id) => {
+
+    try {
+
+        const itemToEdit = await findByID(id)
+
+        if (itemToEdit) {
+            const body = await getPostData(req)
+
+            const { name, description, price } = JSON.parse(body)
+
+            const newProduct = {
+                name: name || itemToEdit.name,
+                description: description || itemToEdit.description, 
+                price: price || itemToEdit.price
+            }
+
+            const data = await editModel(id, newProduct)
+            generalResponse(req, res, data)
+        } else {
+            error404(req, res)
+        }
 
 
+
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 const generalResponse = (req, res, data) => {
-    if (req.method === 'GET') {
+    if (req.method === 'GET' || req.method == 'PUT') {
         res.writeHead(200, { 'Content-Type': 'application/json' })
 
     } else if (req.method === 'POST') {
@@ -96,5 +125,6 @@ module.exports = {
     getModels,
     getModelByID,
     addModel,
+    updateModel,
     error404
 }

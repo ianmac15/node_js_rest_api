@@ -25,7 +25,7 @@ const findByID = (id) => {
     // return null
 
     return new Promise((resolve, reject) => {
-        const product = data.products.find((par) => { par.id === id })
+        const product = data.products.find((par) => { return par.id === id })
         resolve(product)
     })
 }
@@ -34,7 +34,7 @@ const addToDatabase = (item) => {
 
     return new Promise((resolve, reject) => {
         // const newProduct = JSON.parse(jsonObj)
-        const newItem = { id: uuidv4(), ...item}
+        const newItem = { id: uuidv4(), ...item }
         data.products.push(newItem)
 
         // fs.appendFile(data, newProduct, (err) => {
@@ -47,19 +47,38 @@ const addToDatabase = (item) => {
 
 }
 
+const editModel = (id, newItem) => {
+    return new Promise((resolve, reject) => {
+        try {
+            // const itemToUpdate = data.products.find((par) => { return par.id === id })
+            
+            // itemToUpdate.name = newItem.name
+            // itemToUpdate.description = newItem.description
+            // itemToUpdate.price = newItem.price
+
+            const index = data.products.findIndex((par)=> {par.id===id})
+            data.products[index] = {id, ...newItem}
+            writeDataToFile('./data/database.json', data)
+            resolve(data.products[index])
+        } catch(err) {
+            reject(err)
+        }
+    })
+}
+
 const getPostData = (req) => {
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
         try {
             let body = ''
             req.on('data', (chunk) => {
                 body += chunk.toString()
             })
-    
+
             req.on('end', () => {
                 resolve(body)
             })
-    
-    
+
+
         } catch (error) {
             reject(error)
         }
@@ -77,5 +96,6 @@ module.exports = {
     findAll,
     findByID,
     addToDatabase,
-    getPostData
+    getPostData,
+    editModel
 }
