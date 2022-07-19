@@ -1,4 +1,4 @@
-let data = require('../data/database.json')
+const data = require('../data/database.json')
 const fs = require('fs')
 const { v4: uuidv4 } = require('uuid')
 const { resolve } = require('path')

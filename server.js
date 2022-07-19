@@ -5,6 +5,13 @@ const { getModels, getModelByID, addModel, error404, updateModel, deleteModel } 
 
 
 const server = http.createServer((req, res) => {
+
+    const modelTypes = []
+
+    modelTypes.push(req.url.split('/')[2])
+
+    
+
     if (req.url === '/api/products') {
         if (req.method === 'GET') {
             getModels(req, res)
