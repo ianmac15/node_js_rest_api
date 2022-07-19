@@ -1,7 +1,7 @@
 // import http from 'http';
 const { match } = require('assert')
 const http = require('http')
-const { getModels, getModelByID, addModel, error404, updateModel } = require('./controllers/modelController')
+const { getModels, getModelByID, addModel, error404, updateModel, deleteModel } = require('./controllers/modelController')
 
 
 const server = http.createServer((req, res) => {
@@ -17,9 +17,12 @@ const server = http.createServer((req, res) => {
     } else if (req.url.match(/\/api\/products\/([0-9]+)/) && req.method === 'PUT') {
         const id = req.url.split('/')[3]
         updateModel(req, res, id)
+    } else if (req.url.match(/\/api\/products\/([0-9]+)/) && req.method === 'DELETE') {
+        const id = req.url.split('/')[3]
+        deleteModel(req, res, id)
     }
     else {
-        error404(req, res)
+        error404(req, res, 'Route')
     }
 })
 

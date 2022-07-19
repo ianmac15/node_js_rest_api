@@ -1,4 +1,4 @@
-const { findAll, findByID, addToDatabase, getPostData, editModel } = require('../services/modelServices')
+const { findAll, findByID, addToDatabase, getPostData, editModel, deleteData } = require('../services/modelServices')
 
 const getModels = async (req, res) => {
 
@@ -21,7 +21,7 @@ const getModelByID = async (req, res, id) => {
             generalResponse(req, res, product)
         }
         else {
-            error404(req, res)
+            error404(req, res, 'Product')
         }
 
     } catch (error) {
@@ -64,14 +64,14 @@ const updateModel = async (req, res, id) => {
 
             const newProduct = {
                 name: name || itemToEdit.name,
-                description: description || itemToEdit.description, 
+                description: description || itemToEdit.description,
                 price: price || itemToEdit.price
             }
 
             const data = await editModel(id, newProduct)
             generalResponse(req, res, data)
         } else {
-            error404(req, res)
+            error404(req, res, 'Product')
         }
 
 
@@ -81,8 +81,27 @@ const updateModel = async (req, res, id) => {
     }
 }
 
+const deleteModel = async (req, res, id) => {
+    try {
+        const productToDelete = await findByID(id)
+
+        if (productToDelete) {
+            deleteData(id)
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            res.write(JSON.stringify({message:`Product with id:${id} is deleted`}))
+            res.end()
+        } else {
+            error404(req, res, 'Product')
+        }
+
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 const generalResponse = (req, res, data) => {
-    if (req.method === 'GET' || req.method == 'PUT') {
+    if (req.method === 'GET' || req.method === 'PUT') {
         res.writeHead(200, { 'Content-Type': 'application/json' })
 
     } else if (req.method === 'POST') {
@@ -102,9 +121,9 @@ const generalResponse = (req, res, data) => {
     // }
 }
 
-const error404 = (req, res) => {
+const error404 = (req, res, item) => {
     res.writeHead(404, { 'Content-Type': 'application/json' })
-    res.write(JSON.stringify({ message: 'Route Not Found' }))
+    res.write(JSON.stringify({ message: `${item} Not Found` }))
     res.end()
 }
 
@@ -126,5 +145,6 @@ module.exports = {
     getModelByID,
     addModel,
     updateModel,
-    error404
+    error404,
+    deleteModel
 }

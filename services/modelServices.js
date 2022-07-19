@@ -1,6 +1,7 @@
-const data = require('../data/database.json')
+let data = require('../data/database.json')
 const fs = require('fs')
 const { v4: uuidv4 } = require('uuid')
+const { resolve } = require('path')
 
 const findAll = () => {
     const promise = new Promise((resolve, reject) => {
@@ -51,19 +52,33 @@ const editModel = (id, newItem) => {
     return new Promise((resolve, reject) => {
         try {
             // const itemToUpdate = data.products.find((par) => { return par.id === id })
-            
+
             // itemToUpdate.name = newItem.name
             // itemToUpdate.description = newItem.description
             // itemToUpdate.price = newItem.price
 
-            const index = data.products.findIndex((par)=> {par.id===id})
-            data.products[index] = {id, ...newItem}
+            const index = data.products.findIndex((par) =>{return par.id === id} )
+            data.products[index] = { id, ...newItem }
             writeDataToFile('./data/database.json', data)
             resolve(data.products[index])
-        } catch(err) {
+        } catch (err) {
             reject(err)
         }
     })
+}
+
+const deleteData = (id) => {
+    new Promise((resolve, reject)=>{
+        try {
+            data.products = data.products.filter((par) => { return par.id !== id })
+            writeDataToFile('./data/database.json', data)
+            resolve()
+        } catch (err) {
+            reject(err)
+        }
+    })
+    
+
 }
 
 const getPostData = (req) => {
@@ -97,5 +112,6 @@ module.exports = {
     findByID,
     addToDatabase,
     getPostData,
-    editModel
+    editModel,
+    deleteData
 }
