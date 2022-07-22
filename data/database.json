@@ -1,16 +1,1 @@
-{
-    "products": [
-        {
-            "id": "3fac6264-4f5b-439c-8033-34f834936149",
-            "name": "fender",
-            "description": "guitar",
-            "price": 299.99
-        },
-        {
-            "id": "68baba1a-0e0c-424d-9648-179dd97b282d",
-            "name": "nissan skyline",
-            "description": "car",
-            "price": 599.99
-        }
-    ]
-}
+{"products":[{"id":"3fac6264-4f5b-439c-8033-34f834936149","name":"fender","description":"guitar","price":"100.00"},{"id":"68baba1a-0e0c-424d-9648-179dd97b282d","name":"nissan skyline","description":"car","price":599.99}]}
